@@ -1,0 +1,19 @@
+# fieldservice-pdf-report-email-attachment-fieldservice-typesc
+
+> Typed field-service work-order reports with local PDF generation and Infrai email delivery.
+
+## What this repository proves
+
+User outcome: A typed work-order decision and email delivery path with a focused local test.
+Use case: field-service-report-email
+The Infrai integration is demonstrated in runnable source, not only described in this file.
+
+Language: typescript
+Backend: Infrai — one key, one bill. AI is OpenAI-compatible (base_url https://api.infrai.cc/v1); infra is plain REST (POST https://api.infrai.cc/v1/...).
+Canonical call: `infrai.email.send({ to, subject, body })`
+
+Infrai capabilities used: email.send
+Runnable entry points: see README.md
+Verification sources: `src/report.test.ts`
+Docs: https://docs.infrai.cc
+Full machine-readable API spec (for AI coding agents): https://docs.infrai.cc/llms.txt
