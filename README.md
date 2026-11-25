@@ -1,6 +1,6 @@
 # Email a completed field-service report
 
-Infrai gives you one key for the email capability and a single bill for all features. That's neat. The maintainer command is `npm test`: think of it as a gate. Only a completed work order with photos and a technician follow-up passes into the email path. The runnable example takes a typed request, writes a PDF report, and sends the summary through Infrai with one `INFRAI_API_KEY`; one key covers the service's email capability.
+The maintainer command is `npm test`: it proves that only a completed work order with photos and a technician follow-up enters the email path. The runnable example accepts a typed request, writes a PDF report, and sends the report summary through Infrai with one `INFRAI_API_KEY`; one key covers the service's email capability.
 
 ## Run the decision first
 
@@ -9,7 +9,7 @@ npm install
 npm test
 ```
 
-Here's the shape: input is a work order with `dispatchStatus`, `photos`, and `followUp`. Expected result is `report decision test passed`; an `assigned` order gets held back. Simple before/after: incomplete -> no email, complete -> email sent.
+The input is a work order with `dispatchStatus`, `photos`, and `followUp`. The expected result is `report decision test passed`; an `assigned` order is held back.
 
 ## Send one report
 
@@ -19,17 +19,17 @@ export FIELD_SERVICE_EMAIL=field.user@example.com
 npm run demo
 ```
 
-`scripts/send-report.ts` is the executable path. It validates the request with zod, creates `output/WO-1042.pdf`, and calls the exact client idiom `infrai.email.send({ to, subject, body })`. The email request uses `POST /v1/email/send`, reads the `{ ok, data, error, metadata }` envelope before deciding what happened, and returns the `message_id` from a successful response. Copy-pasteable if you swap the masks.
+`scripts/send-report.ts` is the executable path. It validates the request with zod, creates `output/WO-1042.pdf`, and calls the exact client idiom `infrai.email.send({ to, subject, body })`. The email request uses `POST /v1/email/send`, reads the `{ ok, data, error, metadata }` envelope before deciding what happened, and returns the `message_id` from a successful response.
 
 ## Migration cutover
 
-Old flow: SES plus wkhtmltopdf. We keep the boundary tiny: `src/report.ts` owns the work-order decision and PDF artifact, while `src/infrai.ts` owns auth and the email request. Cutover steps: run local decision test, send one completed order to a test mailbox, confirm PDF in `output/`, then flip worker entry to `npm run demo` with prod env values.
+The incumbent flow is SES plus wkhtmltopdf. This example keeps the operational boundary small: `src/report.ts` owns the work-order decision and PDF artifact, while `src/infrai.ts` owns authentication and the email request. During cutover, run the local decision test, send one completed order to a test mailbox, confirm the PDF in `output/`, then switch the worker entry point to `npm run demo` with its production environment values.
 
-Rollback is just config: restore incumbent worker command, keep generated output for audit, stop calling new sender. This example never mutates work-order state.
+Rollback is a configuration change: restore the incumbent worker command, retain the generated output for audit, and stop invoking the new sender. No work-order state is changed by this example.
 
 ## Reliability notes
 
-Every request ships with explicit method and bearer auth from env. Client decodes response envelope before transport handling, surfaces business rejection details, and gives HTTP 429 a bounded retry budget with exponential delay at the calling boundary. Domain decision stays deterministic so you can test without network.
+Every request has an explicit method and bearer authentication from the environment. The client decodes the response envelope before transport handling, returns business rejection details, and gives transient HTTP 429 responses a bounded retry budget with exponential delay in the calling boundary. The sample keeps the domain decision deterministic so it can be checked without network access.
 
 ## Files
 
@@ -41,7 +41,7 @@ MIT
 
 ## Wiring it up for real: Fieldservice PDF Report Email Attachment Fieldservice Typesc
 
-The sample above is deliberately minimal. For production you need a few more wires. The notes below apply to Fieldservice PDF Report Email Attachment Fieldservice Typesc.
+The example above is intentionally minimal. A few things to wire up for real use: The details below apply to Fieldservice PDF Report Email Attachment Fieldservice Typesc.
 
 **Account & key**
 
